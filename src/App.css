@@ -3994,11 +3994,19 @@
   display: block;
   overflow: hidden;
   line-height: inherit;
+  /*
+   * Serif italics can extend beyond their mathematical line box (notably g, y,
+   * p, q and j). The reveal mask needs a little vertical breathing room so it
+   * clips the animation, not the finished glyphs. Negative margins retain the
+   * original compact headline spacing.
+   */
+  padding: 0.08em 0.02em 0.18em;
+  margin: -0.08em -0.02em -0.18em;
 }
 
 .text-reveal-line-inner {
   display: block;
-  transform: translate3d(0, 115%, 0);
+  transform: translate3d(0, 135%, 0);
   transition: transform 0.95s cubic-bezier(0.16, 1, 0.3, 1);
   transition-delay: var(--line-delay, 0ms);
   will-change: transform;
