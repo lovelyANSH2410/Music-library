@@ -169,6 +169,41 @@ export function Player() {
         {/* Mobile / Expanded Track Drawer */}
         {expandedMobile && (
           <div className="player-drawer-content">
+            {/* Mobile Timeline in Drawer */}
+            <div className="drawer-mobile-timeline">
+              <span className="timeline-time">00:00</span>
+              <div className="timeline-track" role="progressbar" aria-valuenow={0} aria-label="Track progress">
+                <div className="timeline-fill" style={{ width: '0%' }} />
+              </div>
+              <span className="timeline-time">{currentTrack.duration}</span>
+            </div>
+
+            {/* Mobile Secondary Controls Row */}
+            <div className="drawer-mobile-controls-row">
+              <div className="drawer-volume-group">
+                <button
+                  className="player-btn volume-mute-btn glass-control"
+                  onClick={toggleMute}
+                  aria-label={isMuted ? 'Unmute volume' : 'Mute volume'}
+                >
+                  {isMuted || volume === 0 ? <VolumeX size={15} /> : <Volume2 size={15} />}
+                </button>
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={isMuted ? 0 : volume}
+                  onChange={e => setVolume(Number(e.target.value))}
+                  className="volume-slider"
+                  aria-label="Master volume"
+                  style={{ '--volume-pct': `${isMuted ? 0 : volume}%` } as React.CSSProperties}
+                />
+              </div>
+              <span className="drawer-demo-badge">
+                DEMO PREVIEW UNAVAILABLE
+              </span>
+            </div>
+
             <div className="drawer-header">
               <span className="drawer-title">TRACKS IN {currentRelease.title.toUpperCase()}</span>
               <span className="drawer-format">{currentRelease.type} · {currentRelease.year}</span>

@@ -23,26 +23,74 @@ export function FeaturedScrollStory() {
   useEffect(() => {
     if (typeof window === 'undefined') return
 
-    const observers: IntersectionObserver[] = []
+    const updateActiveChapter = () => {
+      let closestIdx = 0
+      let minDistance = Infinity
+      const screenTarget = window.innerHeight * 0.45
 
-    chaptersRef.current.forEach((el, index) => {
-      if (!el) return
-      const obs = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            setActiveChapter(index)
-          }
-        },
-        { threshold: 0.5, rootMargin: '-10% 0px -20% 0px' }
-      )
-      obs.observe(el)
-      observers.push(obs)
+      chaptersRef.current.forEach((el, index) => {
+        if (!el) return
+        const rect = el.getBoundingClientRect()
+        const elCenter = rect.top + rect.height * 0.4
+        const dist = Math.abs(screenTarget - elCenter)
+        if (dist < minDistance) {
+          minDistance = dist
+          closestIdx = index
+        }
+      })
+
+      setActiveChapter(closestIdx)
+    }
+
+    // Run once on mount
+    updateActiveChapter()
+
+    // IntersectionObserver for element entry/exit
+    const observer = new IntersectionObserver(
+      () => {
+        updateActiveChapter()
+      },
+      {
+        threshold: [0.1, 0.3, 0.5, 0.7, 0.9],
+        rootMargin: '-5% 0px -10% 0px',
+      }
+    )
+
+    chaptersRef.current.forEach(el => {
+      if (el) observer.observe(el)
     })
 
+    // RAF scroll listener for fluid tracking during fast or slow scrolls
+    let ticking = false
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          updateActiveChapter()
+          ticking = false
+        })
+        ticking = true
+      }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true })
+
     return () => {
-      observers.forEach(o => o.disconnect())
+      observer.disconnect()
+      window.removeEventListener('scroll', onScroll)
     }
   }, [])
+
+  const scrollToChapter = (idx: number) => {
+    setActiveChapter(idx)
+    const el = chaptersRef.current[idx]
+    if (!el) return
+    const isReduced = typeof window !== 'undefined' && 
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    el.scrollIntoView({
+      behavior: isReduced ? 'auto' : 'smooth',
+      block: 'center',
+    })
+  }
 
   return (
     <section className="featured-story-section" id="featured" aria-label="Featured release spotlight">
@@ -74,24 +122,30 @@ export function FeaturedScrollStory() {
               </div>
 
               {/* Progress Milestones Badge */}
-              <div className="story-milestone-pills">
+              <div className="story-milestone-pills" role="tablist" aria-label="Story chapter navigation">
                 <button
+                  role="tab"
+                  aria-selected={activeChapter === 0}
                   className={`milestone-step-btn ${activeChapter === 0 ? 'is-active' : ''}`}
-                  onClick={() => chaptersRef.current[0]?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
+                  onClick={() => scrollToChapter(0)}
                 >
                   <span className="step-dot" />
                   <span>01 CONCEPT</span>
                 </button>
                 <button
+                  role="tab"
+                  aria-selected={activeChapter === 1}
                   className={`milestone-step-btn ${activeChapter === 1 ? 'is-active' : ''}`}
-                  onClick={() => chaptersRef.current[1]?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
+                  onClick={() => scrollToChapter(1)}
                 >
                   <span className="step-dot" />
                   <span>02 ARCHITECTURE</span>
                 </button>
                 <button
+                  role="tab"
+                  aria-selected={activeChapter === 2}
                   className={`milestone-step-btn ${activeChapter === 2 ? 'is-active' : ''}`}
-                  onClick={() => chaptersRef.current[2]?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
+                  onClick={() => scrollToChapter(2)}
                 >
                   <span className="step-dot" />
                   <span>03 TRACK SEQUENCE</span>
