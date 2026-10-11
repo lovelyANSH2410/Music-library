@@ -3567,6 +3567,20 @@
     border-radius: var(--radius-md);
   }
 
+  /*
+   * iOS can intermittently stop compositing backdrop-filter on a fixed element
+   * that is translated for centering. Give the dock a self-sufficient surface
+   * so the compact player and expanded drawer never become transparent.
+   */
+  .audio-player-dock.glass-player {
+    background-color: rgba(10, 11, 17, 0.96);
+    background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.055), transparent 58%);
+    border-color: rgba(255, 255, 255, 0.16);
+    box-shadow: 0 18px 42px -12px rgba(0, 0, 0, 0.82), var(--glass-inset-highlight);
+    backdrop-filter: blur(var(--glass-blur-heavy)) saturate(180%);
+    -webkit-backdrop-filter: blur(var(--glass-blur-heavy)) saturate(180%);
+  }
+
   .player-main-bar {
     grid-template-columns: 42px minmax(0, 1fr) auto auto;
     gap: 10px;
