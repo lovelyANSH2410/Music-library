@@ -13,6 +13,9 @@ import {
 import { releases } from '../data/releases'
 import { CoverArt } from '../components/CoverArt'
 import { usePlayer } from '../context/usePlayer'
+import { Reveal } from '../components/motion/Reveal'
+import { TextReveal } from '../components/motion/TextReveal'
+import { ParallaxMedia } from '../components/motion/ParallaxMedia'
 
 export function ReleaseDetail() {
   const { slug } = useParams<{ slug: string }>()
@@ -67,64 +70,77 @@ export function ReleaseDetail() {
         {/* Hero Release Presentation */}
         <section className="release-spotlight-hero">
           <div className="release-artwork-hero-box">
-            <CoverArt release={release} priority className="detail-hero-cover" />
-            <div className="spotlight-flare" aria-hidden="true" />
+            <ParallaxMedia speed={0.1}>
+              <CoverArt release={release} priority className="detail-hero-cover" />
+              <div className="spotlight-flare" aria-hidden="true" />
+            </ParallaxMedia>
           </div>
 
           <div className="release-hero-details">
-            <div className="detail-eyebrow-row">
-              <span className="detail-cat-badge">{release.catalogId}</span>
-              <span className="detail-format-badge">{release.type} · {release.year}</span>
-            </div>
+            <Reveal variant="fade" delay={50}>
+              <div className="detail-eyebrow-row">
+                <span className="detail-cat-badge">{release.catalogId}</span>
+                <span className="detail-format-badge">{release.type} · {release.year}</span>
+              </div>
+            </Reveal>
 
-            <h1 className="detail-release-heading">
-              {release.title.split(' ').map((word, i) => (
-                <span key={`${word}-${i}`} className={i === 1 ? 'italic-accent' : ''}>
-                  {word}{' '}
-                </span>
-              ))}
-            </h1>
+            <TextReveal
+              as="h1"
+              className="detail-release-heading"
+              delay={100}
+              lines={release.title.split(' ').map((word, i) => ({
+                text: word,
+                italic: i === 1,
+              }))}
+            />
 
-            <p className="detail-synopsis-text">{release.description}</p>
+            <Reveal variant="up" delay={200}>
+              <p className="detail-synopsis-text">{release.description}</p>
+            </Reveal>
 
-            <div className="detail-metadata-grid">
-              <div className="meta-box">
-                <span className="meta-key">SONIC MOOD</span>
-                <strong className="meta-val">{release.mood}</strong>
+            <Reveal variant="fade" delay={260}>
+              <div className="detail-metadata-grid">
+                <div className="meta-box">
+                  <span className="meta-key">SONIC MOOD</span>
+                  <strong className="meta-val">{release.mood}</strong>
+                </div>
+                <div className="meta-box">
+                  <span className="meta-key">DURATION</span>
+                  <strong className="meta-val">{release.duration}</strong>
+                </div>
+                <div className="meta-box">
+                  <span className="meta-key">TRACK COUNT</span>
+                  <strong className="meta-val">{release.tracks.length} compositions</strong>
+                </div>
+                <div className="meta-box">
+                  <span className="meta-key">RELEASE YEAR</span>
+                  <strong className="meta-val">{release.year}</strong>
+                </div>
               </div>
-              <div className="meta-box">
-                <span className="meta-key">DURATION</span>
-                <strong className="meta-val">{release.duration}</strong>
-              </div>
-              <div className="meta-box">
-                <span className="meta-key">TRACK COUNT</span>
-                <strong className="meta-val">{release.tracks.length} compositions</strong>
-              </div>
-              <div className="meta-box">
-                <span className="meta-key">RELEASE YEAR</span>
-                <strong className="meta-val">{release.year}</strong>
-              </div>
-            </div>
+            </Reveal>
 
             {/* Play All / Queue Bar */}
-            <div className="detail-actions-strip">
-              <button
-                className="button primary play-all-btn"
-                onClick={() => selectTrack(release, 0)}
-              >
-                <Play size={16} fill="currentColor" />
-                <span>Select & Queue in Player</span>
-              </button>
-              <span className="demo-notice-tag">
-                <Disc3 size={14} className="disc-icon" />
-                <span>Master stems pending official label distribution</span>
-              </span>
-            </div>
+            <Reveal variant="up" delay={320}>
+              <div className="detail-actions-strip">
+                <button
+                  className="button primary play-all-btn"
+                  onClick={() => selectTrack(release, 0)}
+                >
+                  <Play size={16} fill="currentColor" />
+                  <span>Select & Queue in Player</span>
+                </button>
+                <span className="demo-notice-tag">
+                  <Disc3 size={14} className="disc-icon" />
+                  <span>Master stems pending official label distribution</span>
+                </span>
+              </div>
+            </Reveal>
           </div>
         </section>
 
         {/* Tracklist Section */}
-        <section className="detail-tracklist-section glass-panel">
+        <Reveal variant="up" threshold={0.15}>
+          <section className="detail-tracklist-section glass-panel">
           <div className="tracklist-header-row">
             <div className="tracklist-heading-left">
               <Layers size={16} />
@@ -172,79 +188,84 @@ export function ReleaseDetail() {
             })}
           </div>
         </section>
+        </Reveal>
 
         {/* Liner Notes & Credits Grid */}
-        <section className="detail-liner-notes-grid">
-          <div className="liner-panel glass-panel">
-            <span className="panel-eyebrow">ARCHIVE LINER NOTES</span>
-            <h3 className="liner-heading">Recording Philosophy</h3>
-            <p className="liner-body-text">{release.extendedNotes}</p>
-            <div className="liner-quote-box">
-              <p>“Every resonant frequency in this collection was recorded at analog gain staging thresholds, allowing subtle electromagnetic artifacts to remain untouched.”</p>
-            </div>
-          </div>
-
-          <div className="credits-panel glass-panel">
-            <span className="panel-eyebrow">PRODUCTION CREDITS</span>
-            <h3 className="liner-heading">Personnel & Mastering</h3>
-            <dl className="credits-list">
-              <div>
-                <dt>WRITTEN & ARRANGED</dt>
-                <dd>{release.credits.writtenBy}</dd>
-              </div>
-              <div>
-                <dt>PRODUCED & MIXED</dt>
-                <dd>{release.credits.producedBy}</dd>
-              </div>
-              <div>
-                <dt>MASTERING ENGINEERING</dt>
-                <dd>{release.credits.masteredBy}</dd>
-              </div>
-              <div>
-                <dt>ARTWORK & VISUAL DIRECTION</dt>
-                <dd>{release.credits.artworkBy}</dd>
-              </div>
-            </dl>
-
-            <div className="platforms-destination-box">
-              <span className="dest-box-label">STREAMING & PHYSICAL FORMATS</span>
-              <div className="platforms-row">
-                {release.platforms.map(p => (
-                  <a
-                    key={p.name}
-                    href={p.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="platform-pill glass-control"
-                  >
-                    <span>{p.name}</span>
-                    <small>{p.badge}</small>
-                    <ExternalLink size={11} />
-                  </a>
-                ))}
+        <Reveal variant="scale" threshold={0.15}>
+          <section className="detail-liner-notes-grid">
+            <div className="liner-panel glass-panel">
+              <span className="panel-eyebrow">ARCHIVE LINER NOTES</span>
+              <h3 className="liner-heading">Recording Philosophy</h3>
+              <p className="liner-body-text">{release.extendedNotes}</p>
+              <div className="liner-quote-box">
+                <p>“Every resonant frequency in this collection was recorded at analog gain staging thresholds, allowing subtle electromagnetic artifacts to remain untouched.”</p>
               </div>
             </div>
-          </div>
-        </section>
+
+            <div className="credits-panel glass-panel">
+              <span className="panel-eyebrow">PRODUCTION CREDITS</span>
+              <h3 className="liner-heading">Personnel & Mastering</h3>
+              <dl className="credits-list">
+                <div>
+                  <dt>WRITTEN & ARRANGED</dt>
+                  <dd>{release.credits.writtenBy}</dd>
+                </div>
+                <div>
+                  <dt>PRODUCED & MIXED</dt>
+                  <dd>{release.credits.producedBy}</dd>
+                </div>
+                <div>
+                  <dt>MASTERING ENGINEERING</dt>
+                  <dd>{release.credits.masteredBy}</dd>
+                </div>
+                <div>
+                  <dt>ARTWORK & VISUAL DIRECTION</dt>
+                  <dd>{release.credits.artworkBy}</dd>
+                </div>
+              </dl>
+
+              <div className="platforms-destination-box">
+                <span className="dest-box-label">STREAMING & PHYSICAL FORMATS</span>
+                <div className="platforms-row">
+                  {release.platforms.map(p => (
+                    <a
+                      key={p.name}
+                      href={p.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="platform-pill glass-control"
+                    >
+                      <span>{p.name}</span>
+                      <small>{p.badge}</small>
+                      <ExternalLink size={11} />
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+        </Reveal>
 
         {/* Next / Previous Release Cycle */}
-        <nav className="release-pagination-bar" aria-label="Adjacent release navigation">
-          <Link to={`/music/${prevRelease.slug}`} className="pag-nav-btn prev-btn glass-panel">
-            <ArrowLeft size={16} />
-            <div className="pag-text-group">
-              <span className="pag-label">PREVIOUS TRANSMISSION</span>
-              <strong className="pag-title">{prevRelease.title}</strong>
-            </div>
-          </Link>
+        <Reveal variant="fade" delay={100}>
+          <nav className="release-pagination-bar" aria-label="Adjacent release navigation">
+            <Link to={`/music/${prevRelease.slug}`} className="pag-nav-btn prev-btn glass-panel">
+              <ArrowLeft size={16} />
+              <div className="pag-text-group">
+                <span className="pag-label">PREVIOUS TRANSMISSION</span>
+                <strong className="pag-title">{prevRelease.title}</strong>
+              </div>
+            </Link>
 
-          <Link to={`/music/${nextRelease.slug}`} className="pag-nav-btn next-btn glass-panel">
-            <div className="pag-text-group">
-              <span className="pag-label">NEXT TRANSMISSION</span>
-              <strong className="pag-title">{nextRelease.title}</strong>
-            </div>
-            <ArrowRight size={16} />
-          </Link>
-        </nav>
+            <Link to={`/music/${nextRelease.slug}`} className="pag-nav-btn next-btn glass-panel">
+              <div className="pag-text-group">
+                <span className="pag-label">NEXT TRANSMISSION</span>
+                <strong className="pag-title">{nextRelease.title}</strong>
+              </div>
+              <ArrowRight size={16} />
+            </Link>
+          </nav>
+        </Reveal>
       </div>
     </main>
   )

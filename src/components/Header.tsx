@@ -10,6 +10,8 @@ const navLinks = [
   { to: '/connect', label: 'Connect' },
 ]
 
+import { ScrollProgress } from './motion/ScrollProgress'
+
 export function BrandMark({ size = 36 }: { size?: number }) {
   return (
     <span className="brand-logo-wrap" style={{ width: size, height: size }}>
@@ -49,6 +51,7 @@ export function Header() {
 
   return (
     <header className={`site-header ${scrolled ? 'is-scrolled' : ''}`}>
+      <ScrollProgress />
       <div className="header-inner">
         <Link className="brand-link" to="/" aria-label="Silent Ape Home">
           <BrandMark />

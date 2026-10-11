@@ -6,6 +6,8 @@ import {
   Mail,
   Compass,
 } from 'lucide-react'
+import { Reveal } from '../components/motion/Reveal'
+import { TextReveal } from '../components/motion/TextReveal'
 
 export function Connect() {
   const [formData, setFormData] = useState({
@@ -33,29 +35,36 @@ export function Connect() {
       <div className="section-container">
         {/* Header */}
         <header className="connect-header">
-          <div className="connect-eyebrow">
-            <span className="pulse-indicator" />
-            <span>OPEN TRANSMISSION CHANNELS / 24H</span>
-          </div>
+          <Reveal variant="fade">
+            <div className="connect-eyebrow">
+              <span className="pulse-indicator" />
+              <span>OPEN TRANSMISSION CHANNELS / 24H</span>
+            </div>
+          </Reveal>
 
           <div className="connect-header-grid">
-            <h1 className="connect-main-heading">
-              Say<br />
-              <em>hello.</em>
-            </h1>
-            <p className="connect-sub-lead">
-              Booking, scoring inquiries, press access, stem requests, or a dispatch from
-              the other side of the room. Channels monitored daily.
-            </p>
+            <TextReveal
+              as="h1"
+              className="connect-main-heading"
+              delay={80}
+              lines={['Say', { text: 'hello.', italic: true }]}
+            />
+            <Reveal variant="fade" delay={160}>
+              <p className="connect-sub-lead">
+                Booking, scoring inquiries, press access, stem requests, or a dispatch from
+                the other side of the room. Channels monitored daily.
+              </p>
+            </Reveal>
           </div>
         </header>
 
         {/* Content Columns */}
         <section className="connect-layout-grid">
           {/* Transmission Dispatch Form */}
-          <div className="connect-form-panel glass-panel">
-            <span className="panel-eyebrow">TRANSMISSION DISPATCH</span>
-            <h2 className="form-heading">Send an Inquiry</h2>
+          <Reveal variant="up" delay={100} className="connect-form-panel-wrap">
+            <div className="connect-form-panel glass-panel">
+              <span className="panel-eyebrow">TRANSMISSION DISPATCH</span>
+              <h2 className="form-heading">Send an Inquiry</h2>
 
             {isSuccess ? (
               <div className="form-success-alert glass-panel">
@@ -158,75 +167,78 @@ export function Connect() {
               </form>
             )}
           </div>
+          </Reveal>
 
           {/* Direct Channels */}
-          <div className="direct-channels-column">
-            <div className="channels-card glass-panel">
-              <span className="panel-eyebrow">DIRECT INBOXES</span>
-              <ul className="direct-channels-list">
-                <li>
-                  <a href="mailto:hello@example.com" className="channel-link">
-                    <div className="channel-info">
-                      <span className="channel-label">GENERAL & BOOKING</span>
-                      <strong className="channel-val">hello@example.com</strong>
-                    </div>
-                    <ArrowDownRight size={16} />
-                  </a>
-                </li>
-                <li>
-                  <a href="mailto:press@example.com" className="channel-link">
-                    <div className="channel-info">
-                      <span className="channel-label">PRESS & LICENSING</span>
-                      <strong className="channel-val">press@example.com</strong>
-                    </div>
-                    <ArrowDownRight size={16} />
-                  </a>
-                </li>
-                <li>
-                  <a href="https://instagram.com" target="_blank" rel="noreferrer" className="channel-link">
-                    <div className="channel-info">
-                      <span className="channel-label">INSTAGRAM ARCHIVE</span>
-                      <strong className="channel-val">@silentape</strong>
-                    </div>
-                    <ArrowDownRight size={16} />
-                  </a>
-                </li>
-                <li>
-                  <a href="https://bandcamp.com" target="_blank" rel="noreferrer" className="channel-link">
-                    <div className="channel-info">
-                      <span className="channel-label">BANDCAMP MERCH & VINYL</span>
-                      <strong className="channel-val">silentape.bandcamp.com</strong>
-                    </div>
-                    <ArrowDownRight size={16} />
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            <div className="studio-location-card glass-panel">
-              <div className="location-header">
-                <Compass size={18} />
-                <span className="location-title">STUDIO LOCATION & PHYSICAL BASE</span>
+          <Reveal variant="fade" delay={160} className="direct-channels-column-wrap">
+            <div className="direct-channels-column">
+              <div className="channels-card glass-panel">
+                <span className="panel-eyebrow">DIRECT INBOXES</span>
+                <ul className="direct-channels-list">
+                  <li>
+                    <a href="mailto:hello@example.com" className="channel-link">
+                      <div className="channel-info">
+                        <span className="channel-label">GENERAL & BOOKING</span>
+                        <strong className="channel-val">hello@example.com</strong>
+                      </div>
+                      <ArrowDownRight size={16} />
+                    </a>
+                  </li>
+                  <li>
+                    <a href="mailto:press@example.com" className="channel-link">
+                      <div className="channel-info">
+                        <span className="channel-label">PRESS & LICENSING</span>
+                        <strong className="channel-val">press@example.com</strong>
+                      </div>
+                      <ArrowDownRight size={16} />
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://instagram.com" target="_blank" rel="noreferrer" className="channel-link">
+                      <div className="channel-info">
+                        <span className="channel-label">INSTAGRAM ARCHIVE</span>
+                        <strong className="channel-val">@silentape</strong>
+                      </div>
+                      <ArrowDownRight size={16} />
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://bandcamp.com" target="_blank" rel="noreferrer" className="channel-link">
+                      <div className="channel-info">
+                        <span className="channel-label">BANDCAMP MERCH & VINYL</span>
+                        <strong className="channel-val">silentape.bandcamp.com</strong>
+                      </div>
+                      <ArrowDownRight size={16} />
+                    </a>
+                  </li>
+                </ul>
               </div>
-              <p className="location-desc">
-                Analog sound lab based in Los Angeles, California. Studio visits and tape session
-                collaborations arranged by prior appointment.
-              </p>
-              <div className="location-coord-strip">
-                <span>LAT: 34°02′52.1″ N</span>
-                <span>LON: 118°14′37.2″ W</span>
-                <span>ELEV: 84M</span>
+
+              <div className="studio-location-card glass-panel">
+                <div className="location-header">
+                  <Compass size={18} />
+                  <span className="location-title">STUDIO LOCATION & PHYSICAL BASE</span>
+                </div>
+                <p className="location-desc">
+                  Analog sound lab based in Los Angeles, California. Studio visits and tape session
+                  collaborations arranged by prior appointment.
+                </p>
+                <div className="location-coord-strip">
+                  <span>LAT: 34°02′52.1″ N</span>
+                  <span>LON: 118°14′37.2″ W</span>
+                  <span>ELEV: 84M</span>
+                </div>
+              </div>
+
+              <div className="disclaimer-panel glass-panel">
+                <Mail size={16} />
+                <p>
+                  All placeholder contact destinations are clearly labeled. To connect custom domains
+                  or transactional email APIs, update environment variables before deployment.
+                </p>
               </div>
             </div>
-
-            <div className="disclaimer-panel glass-panel">
-              <Mail size={16} />
-              <p>
-                All placeholder contact destinations are clearly labeled. To connect custom domains
-                or transactional email APIs, update environment variables before deployment.
-              </p>
-            </div>
-          </div>
+          </Reveal>
         </section>
       </div>
     </main>

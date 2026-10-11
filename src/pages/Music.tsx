@@ -12,6 +12,8 @@ import {
 import { releases, type Release } from '../data/releases'
 import { CoverArt } from '../components/CoverArt'
 import { usePlayer } from '../context/usePlayer'
+import { Reveal } from '../components/motion/Reveal'
+import { TextReveal } from '../components/motion/TextReveal'
 
 type FilterCategory = 'ALL' | 'ALBUM' | 'EP' | 'SINGLE'
 type ViewMode = 'grid' | 'list'
@@ -62,19 +64,24 @@ export function Music() {
           </div>
 
           <div className="archive-title-row">
-            <h1 className="archive-heading">
-              Every<br />
-              <em>signal.</em>
-            </h1>
-            <p className="archive-subtext">
-              A chronological archive of albums, EPs, and standalone singles.
-              Mastered for high-fidelity playback and deep spatial listening.
-            </p>
+            <TextReveal
+              as="h1"
+              className="archive-heading"
+              delay={80}
+              lines={['Every', { text: 'signal.', italic: true }]}
+            />
+            <Reveal variant="fade" delay={180}>
+              <p className="archive-subtext">
+                A chronological archive of albums, EPs, and standalone singles.
+                Mastered for high-fidelity playback and deep spatial listening.
+              </p>
+            </Reveal>
           </div>
         </header>
 
         {/* Catalog Control Toolbar */}
-        <section className="catalog-toolbar glass-panel" aria-label="Archive filters and search">
+        <Reveal variant="fade" delay={120}>
+          <section className="catalog-toolbar glass-panel" aria-label="Archive filters and search">
           {/* Filter Tabs */}
           <div className="filter-pill-group" role="tablist" aria-label="Filter by format">
             <button
@@ -162,6 +169,7 @@ export function Music() {
             </div>
           </div>
         </section>
+        </Reveal>
 
         {/* Releases Display */}
         {filteredReleases.length === 0 ? (
@@ -181,9 +189,12 @@ export function Music() {
           </div>
         ) : viewMode === 'grid' ? (
           <div className="catalog-grid-layout">
-            {filteredReleases.map((rel: Release) => (
-              <article
+            {filteredReleases.map((rel: Release, idx: number) => (
+              <Reveal
                 key={rel.slug}
+                variant="scale"
+                delay={idx * 90}
+                as="article"
                 className={`catalog-card glass-panel ${currentRelease.slug === rel.slug ? 'is-currently-playing' : ''}`}
               >
                 <Link to={`/music/${rel.slug}`} className="catalog-card-art-wrap">
@@ -226,7 +237,7 @@ export function Music() {
                     </Link>
                   </div>
                 </div>
-              </article>
+              </Reveal>
             ))}
           </div>
         ) : (
