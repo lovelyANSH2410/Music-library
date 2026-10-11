@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://example.com/</loc></url>
+  <url><loc>https://example.com/music</loc></url>
+  <url><loc>https://example.com/music/peripheral-vision</loc></url>
+  <url><loc>https://example.com/music/ghost-signal</loc></url>
+  <url><loc>https://example.com/music/another-sun</loc></url>
+  <url><loc>https://example.com/music/melt-pattern</loc></url>
+  <url><loc>https://example.com/about</loc></url>
+  <url><loc>https://example.com/connect</loc></url>
+</urlset>
