@@ -1,20 +1,61 @@
-import { useEffect, useMemo, useState } from 'react'
-import { Link, NavLink, Route, Routes, useParams } from 'react-router-dom'
-import { ArrowDownRight, ArrowLeft, AtSign, CirclePlay, Menu, Pause, Play, Search, Share2, SkipBack, SkipForward, Volume2, X } from 'lucide-react'
-import { releases, type Release } from './data/releases'
+import { useEffect } from 'react'
+import { Routes, Route, useLocation } from 'react-router-dom'
+import { PlayerProvider } from './context/PlayerContext'
+import { Header } from './components/Header'
+import { Footer } from './components/Footer'
+import { Player } from './components/Player'
+import { CursorGlow } from './components/CursorGlow'
+import { Home } from './pages/Home'
+import { Music } from './pages/Music'
+import { ReleaseDetail } from './pages/ReleaseDetail'
+import { About } from './pages/About'
+import { Connect } from './pages/Connect'
+import { NotFound } from './pages/NotFound'
 import './App.css'
 
-const nav = [['/', 'Home'], ['/music', 'Music'], ['/about', 'About'], ['/connect', 'Connect']]
-function useMeta(title: string, description: string) { useEffect(() => { document.title = `${title} — Silent Ape`; document.querySelector('meta[name="description"]')?.setAttribute('content', description) }, [title, description]) }
-function Mark() { return <span className="mark" aria-label="Silent Ape"><i></i><i></i><i></i></span> }
-function Cover({ release, priority = false }: { release: Release; priority?: boolean }) { if (release.cover === 'image') return <img className="cover cover-image" src="/art/peripheral-vision.png" alt={`Demo artwork for ${release.title}`} loading={priority ? 'eager' : 'lazy'} />; return <div className={`cover cover-${release.cover}`} aria-label={`Abstract demo artwork for ${release.title}`} role="img"><span></span><b></b><em></em></div> }
-function Header({ menuOpen, setMenuOpen }: { menuOpen: boolean; setMenuOpen: (open: boolean) => void }) { return <header className="site-head"><Link className="brand" to="/"><Mark /><span>SILENT<br />APE</span></Link><nav className="desktop-nav" aria-label="Primary navigation">{nav.map(([to, label]) => <NavLink key={to} to={to} end={to === '/'}>{label}</NavLink>)}</nav><button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)} aria-expanded={menuOpen} aria-label="Toggle navigation">{menuOpen ? <X /> : <Menu />}</button><nav className={`mobile-nav ${menuOpen ? 'open' : ''}`} aria-label="Mobile navigation">{nav.map(([to, label]) => <NavLink key={to} to={to} end={to === '/'} onClick={() => setMenuOpen(false)}>{label}</NavLink>)}</nav></header> }
-function Player() { const [playing, setPlaying] = useState(false); const [progress, setProgress] = useState(28); return <aside className="player glass" aria-label="Demo player, audio unavailable"><div className="player-art"><Cover release={releases[0]} /></div><div className="track-info"><span>NOW SELECTED</span><strong>Peripheral Vision</strong><small>Silent Ape · Demo preview unavailable</small></div><div className="player-controls"><button aria-label="Previous track"><SkipBack /></button><button className="play" onClick={() => setPlaying(!playing)} aria-label={playing ? 'Pause demo interface' : 'Play demo interface'}>{playing ? <Pause /> : <Play />}</button><button aria-label="Next track"><SkipForward /></button></div><input className="seek" aria-label="Demo seek position" type="range" min="0" max="100" value={progress} onChange={e => setProgress(Number(e.target.value))} style={{ '--progress': `${progress}%` } as React.CSSProperties} /><button className="volume" aria-label="Volume"><Volume2 /></button></aside> }
-function Home() { useMeta('Independent music & visual world', 'Silent Ape is a demo artist website built for a future official release catalogue.'); return <main><section className="hero"><div className="hero-copy"><p className="eyebrow">INDEPENDENT TRANSMISSION · 01</p><h1>Music for<br /><em>the afterimage.</em></h1><p className="intro">A home for new frequencies, visual experiments, and everything heard after midnight.</p><div className="hero-actions"><Link className="button primary" to="/music">Explore releases <ArrowDownRight /></Link><a className="text-link" href="#statement">Enter the archive <span>↘</span></a></div></div><div className="hero-art"><div className="orbital-line"></div><div className="hero-cover"><Cover release={releases[0]} priority /></div><div className="release-stamp glass"><span>NEW / 2026</span><b>Peripheral<br />Vision</b><i>Album</i></div><div className="coordinates">34°02' 52.1" N<br />118°14' 37.2" W</div></div></section><section className="ticker" aria-label="Artist statement"><span>THE SIGNAL IS ALWAYS THERE</span><i>✳</i><span>LISTEN CLOSER</span><i>✳</i><span>THE SIGNAL IS ALWAYS THERE</span></section><section className="featured section"><div className="section-label"><span>01 / CURRENT RELEASE</span><Link to="/music">All music <ArrowDownRight /></Link></div><article className="release-feature"><div className="feature-art"><Cover release={releases[0]} /></div><div className="feature-copy"><p className="eyebrow lime">AVAILABLE NOW · DEMO CATALOG</p><h2>Peripheral<br /><em>Vision</em></h2><p>Five recordings about soft surveillance, city weather, and the strange comfort of a distant light.</p><dl><div><dt>FORMAT</dt><dd>Album</dd></div><div><dt>RUN TIME</dt><dd>38:04</dd></div><div><dt>RELEASE</dt><dd>2026</dd></div></dl><Link to="/music/peripheral-vision" className="button outline">Open release <ArrowDownRight /></Link></div></article></section><section id="statement" className="statement section"><p className="eyebrow">02 / A QUIET MANIFESTO</p><h2>Silence is not<br />the absence of sound.<br /><em>It is the frame.</em></h2><div><p>Silent Ape is an editable artist identity and release environment. Trade these placeholder words for a real biography, then let the work carry the rest.</p><Link to="/about" className="text-link">Read artist note <ArrowDownRight /></Link></div></section><section className="release-row section"><div className="section-label"><span>03 / SELECTED SIGNALS</span><Link to="/music">View discography <ArrowDownRight /></Link></div><div className="release-grid">{releases.slice(1).map((r, i) => <Link key={r.slug} to={`/music/${r.slug}`} className={`release-card card-${i}`}><Cover release={r} /><div><span>{r.type} · {r.year}</span><h3>{r.title}</h3></div><CirclePlay /></Link>)}</div></section><section className="connect-strip"><p>For the ones still<br />tuning in.</p><Link to="/connect" className="circle-link" aria-label="Connect with Silent Ape"><ArrowDownRight /></Link></section></main> }
-function Music() { useMeta('Music', 'Explore the editable Silent Ape demo catalogue of albums, EPs and singles.'); return <main className="page music-page"><div className="page-intro"><p className="eyebrow">THE CATALOGUE / 04</p><h1>Every<br /><em>signal.</em></h1><p>Demo releases arranged as a living archive. Replace metadata and artwork in one data file when the real catalog arrives.</p></div><div className="catalog-bar"><span>{releases.length} RELEASES</span><span>ALL / ALBUMS / EPS / SINGLES</span><button aria-label="Search releases"><Search /></button></div><section className="catalog">{releases.map((r, i) => <Link className={`catalog-item catalog-${i}`} to={`/music/${r.slug}`} key={r.slug}><Cover release={r} priority={i === 0} /><div className="catalog-meta"><div><span>{r.type} · {r.year}</span><h2>{r.title}</h2></div><span>{r.mood}</span></div></Link>)}</section></main> }
-function ReleasePage() { const { slug } = useParams(); const release = releases.find(r => r.slug === slug); useMeta(release?.title ?? 'Page not found', release ? `${release.title} by Silent Ape — editable demo release page.` : 'The page you were looking for does not exist.'); if (!release) return <NotFound />; return <main className="release-page"><Link className="back-link" to="/music"><ArrowLeft /> Back to music</Link><section className="release-hero"><div className="release-main-art"><Cover release={release} priority /></div><div className="release-heading"><p className="eyebrow">{release.type} / {release.year}</p><h1>{release.title.split(' ').map((word, i) => <span key={word} className={i === 1 ? 'italic' : ''}>{word} </span>)}</h1><p>{release.description}</p><div className="metadata"><span>{release.mood}</span><span>{release.duration}</span></div><button className="button primary disabled" title="No audio source supplied"><Play /> Preview unavailable</button><small>Audio is not connected in this demo.</small></div></section><section className="track-list"><div className="section-label"><span>TRACK LIST</span><button aria-label="Share release"><Share2 /></button></div>{release.tracks.map((track, i) => <div className="track" key={track}><span>0{i + 1}</span><b>{track}</b><i>{i === 0 ? '—' : `0${3 + i}:${i}4`}</i><button aria-label={`Preview unavailable: ${track}`} disabled><Play /></button></div>)}</section><section className="liner glass"><p className="eyebrow lime">LINER NOTE / DEMO CONTENT</p><p>Official liner notes, credits, lyrics, production information, streaming destinations and press material can live here once supplied.</p></section></main> }
-function About() { useMeta('About', 'A placeholder artist statement for the Silent Ape project.'); return <main className="page about-page"><div className="page-intro"><p className="eyebrow">ABOUT / ARTIST NOTE</p><h1>Keeping the<br /><em>noise useful.</em></h1></div><section className="about-layout"><div className="portrait-block"><div className="portrait-orb"></div><span>ARTIST IMAGE<br />PLACEHOLDER</span></div><div className="about-copy"><p className="lead">Silent Ape is a placeholder name for an artist project that treats sound as material, atmosphere as architecture, and attention as an instrument.</p><p>This is intentionally editable demo copy. Add verified biography, location, collaborators, credits, and project history here—without inventing the story before it exists.</p><p>For now, the site leaves room for the work to introduce itself.</p><div className="milestones"><span>BUILT FOR</span><b>Music / moving image / live moments / small transmissions</b></div></div></section></main> }
-function Connect() { useMeta('Connect', 'Contact and social placeholders for Silent Ape.'); return <main className="page connect-page"><p className="eyebrow">OPEN CHANNEL / 24H</p><h1>Say<br /><em>hello.</em></h1><p className="connect-lead">Booking, collaboration, press, or a note from the other side of the room.</p><div className="contact-options"><a href="mailto:hello@example.com"><span>GENERAL / BOOKING</span><b>hello@example.com <ArrowDownRight /></b></a><a href="mailto:press@example.com"><span>PRESS / ASSETS</span><b>press@example.com <ArrowDownRight /></b></a><a href="#" onClick={e => e.preventDefault()}><span>INSTAGRAM</span><b>@silentape <AtSign /></b></a></div><p className="form-note">Contact links are placeholders. Replace them with real destinations or connect a form service later.</p></main> }
-function NotFound() { useMeta('Page not found', 'The page you were looking for does not exist.'); return <main className="not-found"><p className="eyebrow">404 / LOST SIGNAL</p><h1>Nothing<br /><em>here.</em></h1><Link className="button primary" to="/">Return home <ArrowLeft /></Link></main> }
-function Footer() { return <footer><div className="footer-brand"><Mark /><span>SILENT APE</span></div><p>© 2026 SILENT APE<br />DEMO FRONTEND</p><div><a href="#">Instagram</a><a href="#">Bandcamp</a><a href="#">Soundcloud</a></div></footer> }
-export default function App() { const [menuOpen, setMenuOpen] = useState(false); const data = useMemo(() => ({ '@context': 'https://schema.org', '@type': 'MusicGroup', name: 'Silent Ape', description: 'Editable demo artist website.' }), []); return <><script type="application/ld+json">{JSON.stringify(data)}</script><Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} /><Routes><Route path="/" element={<Home />} /><Route path="/music" element={<Music />} /><Route path="/music/:slug" element={<ReleasePage />} /><Route path="/about" element={<About />} /><Route path="/connect" element={<Connect />} /><Route path="*" element={<NotFound />} /></Routes><Footer /><Player /></> }
+function ScrollToTop() {
+  const { pathname } = useLocation()
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [pathname])
+
+  return null
+}
+
+export default function App() {
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'MusicGroup',
+    name: 'Silent Ape',
+    genre: ['Electronic', 'Ambient', 'Experimental'],
+    description: 'Independent music & visual world. Music for the afterimage.',
+    url: 'https://silentape.com',
+  }
+
+  return (
+    <PlayerProvider>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+      <div className="site-wrapper">
+        <CursorGlow />
+        <Header />
+        <ScrollToTop />
+        <div className="page-content-wrapper">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/music" element={<Music />} />
+            <Route path="/music/:slug" element={<ReleaseDetail />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/connect" element={<Connect />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </div>
+        <Footer />
+        <Player />
+      </div>
+    </PlayerProvider>
+  )
+}

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { Menu, X, Radio } from 'lucide-react'
-import { usePlayer } from '../context/PlayerContext'
+import { usePlayer } from '../context/usePlayer'
 
 const navLinks = [
   { to: '/', label: 'Home' },
@@ -10,12 +10,17 @@ const navLinks = [
   { to: '/connect', label: 'Connect' },
 ]
 
-export function BrandMark() {
+export function BrandMark({ size = 36 }: { size?: number }) {
   return (
-    <span className="brand-mark" aria-label="Silent Ape soundwave mark">
-      <span className="bar bar-1" />
-      <span className="bar bar-2" />
-      <span className="bar bar-3" />
+    <span className="brand-logo-wrap" style={{ width: size, height: size }}>
+      <img
+        src="/Neon Gorilla Cyberpunk App Icon.png"
+        alt="Silent Ape neon gorilla logo"
+        className="brand-logo-img"
+        width={size}
+        height={size}
+      />
+      <span className="brand-logo-rim" aria-hidden="true" />
     </span>
   )
 }
@@ -35,10 +40,12 @@ export function Header() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Close mobile menu on route change
-  useEffect(() => {
+  // Close mobile menu on route change during render
+  const [prevPathname, setPrevPathname] = useState(location.pathname)
+  if (prevPathname !== location.pathname) {
+    setPrevPathname(location.pathname)
     setMenuOpen(false)
-  }, [location.pathname])
+  }
 
   return (
     <header className={`site-header ${scrolled ? 'is-scrolled' : ''}`}>

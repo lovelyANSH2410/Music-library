@@ -1,26 +1,6 @@
-import { createContext, useContext, useState, ReactNode, useCallback } from 'react'
-import { releases, type Release, type TrackItem } from '../data/releases'
-
-interface PlayerContextType {
-  currentRelease: Release
-  currentTrack: TrackItem
-  currentTrackIndex: number
-  isPlaying: boolean
-  audioAvailable: boolean
-  volume: number
-  isMuted: boolean
-  progress: number
-  statusBanner: string | null
-  selectTrack: (release: Release, trackIndex?: number) => void
-  togglePlay: () => void
-  nextTrack: () => void
-  prevTrack: () => void
-  setVolume: (val: number) => void
-  toggleMute: () => void
-  dismissBanner: () => void
-}
-
-const PlayerContext = createContext<PlayerContextType | null>(null)
+import { useState, type ReactNode, useCallback } from 'react'
+import { releases, type Release } from '../data/releases'
+import { PlayerContext } from './playerContextDef'
 
 export function PlayerProvider({ children }: { children: ReactNode }) {
   const [currentRelease, setCurrentRelease] = useState<Release>(releases[0])
@@ -49,7 +29,6 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     const safeIndex = Math.max(0, Math.min(trackIndex, release.tracks.length - 1))
     setCurrentTrackIndex(safeIndex)
     setProgress(0)
-    // Honest playback state: notify user that this release is queued in player
     showDemoNotice(`Selected: "${release.tracks[safeIndex].title}" (${release.title}). Audio preview unreleased in demo catalogue.`)
   }, [showDemoNotice])
 
@@ -67,7 +46,6 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
       setCurrentTrackIndex(prev => prev + 1)
       setProgress(0)
     } else {
-      // Loop or go to next release
       const currentRelIndex = releases.findIndex(r => r.slug === currentRelease.slug)
       const nextRel = releases[(currentRelIndex + 1) % releases.length]
       setCurrentRelease(nextRel)
@@ -128,10 +106,4 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
       {children}
     </PlayerContext.Provider>
   )
-}
-
-export function usePlayer() {
-  const ctx = useContext(PlayerContext)
-  if (!ctx) throw new Error('usePlayer must be used within PlayerProvider')
-  return ctx
 }

@@ -1,2 +1,138 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap');
-:root{font-family:Manrope,Arial,sans-serif;color:#f4f3ef;background:#08090d;font-synthesis:none;text-rendering:optimizeLegibility}*{box-sizing:border-box}html{scroll-behavior:smooth;background:#08090d}body{margin:0;min-width:320px;background:#08090d}button,a,input{font:inherit}button{cursor:pointer}a{color:inherit;text-decoration:none}::selection{background:#d6ff3f;color:#0b0c0e}
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Manrope:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap');
+
+:root {
+  /* Color Palette - The After-Hours Transmission Archive */
+  --bg-primary: #08090c;
+  --bg-secondary: #101019;
+  --bg-tertiary: #161626;
+  --bg-elevated: #1e1e30;
+
+  --text-primary: #f3f0ea;
+  --text-secondary: #aaa7b4;
+  --text-muted: #6e6b7b;
+
+  --signal-lime: #d6ff38;
+  --signal-lime-dim: rgba(214, 255, 56, 0.15);
+  --signal-lime-glow: rgba(214, 255, 56, 0.35);
+
+  --ambient-violet: #8a58dc;
+  --ambient-violet-dim: rgba(138, 88, 220, 0.18);
+  --ambient-violet-deep: #281746;
+
+  /* Genuine macOS Glass Materials */
+  --glass-surface-panel: rgba(18, 18, 28, 0.65);
+  --glass-surface-nav: rgba(10, 11, 16, 0.72);
+  --glass-surface-nav-scrolled: rgba(8, 9, 14, 0.88);
+  --glass-surface-control: rgba(255, 255, 255, 0.05);
+  --glass-surface-control-hover: rgba(255, 255, 255, 0.1);
+  --glass-surface-player: rgba(15, 15, 24, 0.78);
+
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-border-subtle: rgba(255, 255, 255, 0.05);
+  --glass-border-strong: rgba(255, 255, 255, 0.15);
+  --glass-border-highlight: rgba(255, 255, 255, 0.22);
+
+  --glass-shadow-soft: 0 16px 40px -10px rgba(0, 0, 0, 0.5);
+  --glass-shadow-elevated: 0 24px 60px -15px rgba(0, 0, 0, 0.7), 0 0 1px 1px rgba(255, 255, 255, 0.08);
+  --glass-inset-highlight: inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
+
+  --glass-blur: 24px;
+  --glass-blur-heavy: 32px;
+
+  /* Typography tokens */
+  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-sans: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'DM Mono', SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* Container & Spacing */
+  --site-max-width: 1380px;
+  --site-gutter: clamp(1.25rem, 4vw, 3.5rem);
+
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+
+  /* Transitions */
+  --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-fast: 160ms var(--ease-smooth);
+  --transition-normal: 280ms var(--ease-smooth);
+  --transition-slow: 500ms var(--ease-smooth);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Accessibility Focus Outline */
+:focus-visible {
+  outline: 2px solid var(--signal-lime);
+  outline-offset: 3px;
+}
+
+/* Selection */
+::selection {
+  background-color: var(--signal-lime);
+  color: #08090c;
+}
+
+/* Base resets */
+button, input, select, textarea {
+  font-family: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* Fallbacks for non-backdrop-filter browsers */
+@supports not (backdrop-filter: blur(10px)) {
+  .glass-panel {
+    background-color: rgba(18, 18, 28, 0.95) !important;
+  }
+  .glass-player {
+    background-color: rgba(12, 13, 20, 0.98) !important;
+  }
+  .glass-control {
+    background-color: rgba(28, 29, 42, 0.95) !important;
+  }
+  .site-header {
+    background-color: rgba(8, 9, 14, 0.98) !important;
+  }
+}
