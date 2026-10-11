@@ -169,6 +169,36 @@ export function Player() {
         {/* Mobile / Expanded Track Drawer */}
         {expandedMobile && (
           <div className="player-drawer-content">
+            {/* Mobile Expanded Transport Controls */}
+            <div className="drawer-transport-row">
+              <button
+                className="player-btn control-prev glass-control"
+                onClick={prevTrack}
+                aria-label="Previous track"
+                title="Previous track"
+              >
+                <SkipBack size={18} />
+              </button>
+
+              <button
+                className="player-btn control-play primary-play-btn drawer-play-btn"
+                onClick={togglePlay}
+                aria-label={isPlaying ? 'Pause preview' : 'Play preview'}
+                title={isPlaying ? 'Pause' : 'Play'}
+              >
+                {isPlaying ? <Pause size={20} /> : <Play size={20} />}
+              </button>
+
+              <button
+                className="player-btn control-next glass-control"
+                onClick={nextTrack}
+                aria-label="Next track"
+                title="Next track"
+              >
+                <SkipForward size={18} />
+              </button>
+            </div>
+
             {/* Mobile Timeline in Drawer */}
             <div className="drawer-mobile-timeline">
               <span className="timeline-time">00:00</span>
