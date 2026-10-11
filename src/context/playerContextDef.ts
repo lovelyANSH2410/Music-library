@@ -10,6 +10,7 @@ export interface PlayerContextType {
   volume: number
   isMuted: boolean
   progress: number
+  elapsedTime: number
   statusBanner: string | null
   selectTrack: (release: Release, trackIndex?: number) => void
   togglePlay: () => void
@@ -17,6 +18,7 @@ export interface PlayerContextType {
   prevTrack: () => void
   setVolume: (val: number) => void
   toggleMute: () => void
+  seek: (percent: number) => void
   dismissBanner: () => void
 }
 

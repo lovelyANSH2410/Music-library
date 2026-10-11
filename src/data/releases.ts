@@ -2,6 +2,8 @@ export interface TrackItem {
   title: string
   duration: string
   number: string
+  audioSrc?: string
+  previewCredit?: string
 }
 
 export interface PlatformLink {
@@ -44,10 +46,26 @@ export const releases: Release[] = [
     description: 'A full-length archive exploring soft surveillance, city weather, and the strange comfort of distant light after midnight.',
     extendedNotes: 'Recorded between October 2025 and January 2026 in Los Angeles. Built from field recordings of electrical hum, vintage analog tape loops, and modular synthesizers tuned to sub-bass resonances.',
     tracks: [
-      { number: '01', title: 'In the Static', duration: '06:14' },
-      { number: '02', title: 'Peripheral Vision', duration: '08:42' },
-      { number: '03', title: 'Rooms Without Corners', duration: '07:18' },
-      { number: '04', title: 'Silver Interference', duration: '05:55' },
+      {
+        number: '01', title: 'In the Static', duration: '00:54',
+        audioSrc: 'https://files.freemusicarchive.org/storage-freemusicarchive-org/tracks/UDkMLnEIWuv4pRUxenw42QEBrs2ZVVTy38Q7rBzM.mp3',
+        previewCredit: 'Dormant · 1000 Handz · CC BY 4.0',
+      },
+      {
+        number: '02', title: 'Peripheral Vision', duration: '02:15',
+        audioSrc: 'https://files.freemusicarchive.org/storage-freemusicarchive-org/tracks/hWd8a00w2NN5qBpYOjlQmcufNjzJKOArNMRhC4gZ.mp3',
+        previewCredit: 'World Is Yourz · 1000 Handz · CC BY 4.0',
+      },
+      {
+        number: '03', title: 'Rooms Without Corners', duration: '01:26',
+        audioSrc: 'https://files.freemusicarchive.org/storage-freemusicarchive-org/tracks/urJexhI5n5PMhMRMb9NSNX8OD8w8hoJ2gSXzpp11.mp3',
+        previewCredit: 'Smoke Alarm · 1000 Handz · CC BY 4.0',
+      },
+      {
+        number: '04', title: 'Silver Interference', duration: '02:36',
+        audioSrc: 'https://files.freemusicarchive.org/storage-freemusicarchive-org/tracks/OqK1Cnf69ceB3005gF883TFXLEhJ8sxnN8iqSDrX.mp3',
+        previewCredit: 'Electronika · 1000 Handz · CC BY 4.0',
+      },
       { number: '05', title: 'A Soft Exit', duration: '09:55' },
     ],
     credits: {

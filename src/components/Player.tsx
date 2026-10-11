@@ -14,6 +14,11 @@ import {
 import { usePlayer } from '../context/usePlayer'
 import { CoverArt } from './CoverArt'
 
+function formatPlaybackTime(seconds: number) {
+  const safeSeconds = Math.max(0, Math.floor(seconds || 0))
+  return `${Math.floor(safeSeconds / 60).toString().padStart(2, '0')}:${(safeSeconds % 60).toString().padStart(2, '0')}`
+}
+
 export function Player() {
   const {
     currentRelease,
@@ -22,17 +27,31 @@ export function Player() {
     isPlaying,
     volume,
     isMuted,
+    progress,
+    elapsedTime,
     statusBanner,
     togglePlay,
     nextTrack,
     prevTrack,
     setVolume,
     toggleMute,
+    seek,
     dismissBanner,
     selectTrack,
   } = usePlayer()
 
   const [expandedMobile, setExpandedMobile] = useState(false)
+
+  const seekFromTimeline = (event: React.MouseEvent<HTMLDivElement>) => {
+    const { left, width } = event.currentTarget.getBoundingClientRect()
+    if (width) seek((event.clientX - left) / width)
+  }
+
+  const seekWithKeyboard = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return
+    event.preventDefault()
+    seek((progress + (event.key === 'ArrowRight' ? 5 : -5)) / 100)
+  }
 
   return (
     <>
@@ -76,14 +95,14 @@ export function Player() {
                 {currentRelease.catalogId} · {currentTrack.number}
               </span>
               <span className="audio-availability-tag">
-                DEMO PREVIEW UNAVAILABLE
+                {currentTrack.audioSrc ? 'CC BY PREVIEW AVAILABLE' : 'PREVIEW UNAVAILABLE'}
               </span>
             </div>
             <strong className="track-title-heading" title={currentTrack.title}>
               {currentTrack.title}
             </strong>
-            <span className="release-title-sub">
-              {currentRelease.title} · {currentRelease.type} ({currentRelease.year})
+            <span className="release-title-sub" title={currentTrack.previewCredit}>
+              {currentTrack.previewCredit || `${currentRelease.title} · ${currentRelease.type} (${currentRelease.year})`}
             </span>
           </div>
 
@@ -119,17 +138,20 @@ export function Player() {
 
           {/* Track Duration & Waveform Indicator */}
           <div className="player-timeline">
-            <span className="timeline-time start-time">00:00</span>
+            <span className="timeline-time start-time">{formatPlaybackTime(elapsedTime)}</span>
             <div
               className="timeline-track"
               role="progressbar"
-              aria-valuenow={0}
+              aria-valuenow={Math.round(progress)}
               aria-valuemin={0}
               aria-valuemax={100}
               aria-label="Track progress"
+              tabIndex={0}
+              onClick={seekFromTimeline}
+              onKeyDown={seekWithKeyboard}
             >
-              <div className="timeline-fill" style={{ width: '0%' }} />
-              <div className="timeline-scrubber" style={{ left: '0%' }} />
+              <div className="timeline-fill" style={{ width: `${progress}%` }} />
+              <div className="timeline-scrubber" style={{ left: `${progress}%` }} />
             </div>
             <span className="timeline-time end-time">{currentTrack.duration}</span>
           </div>
@@ -201,9 +223,19 @@ export function Player() {
 
             {/* Mobile Timeline in Drawer */}
             <div className="drawer-mobile-timeline">
-              <span className="timeline-time">00:00</span>
-              <div className="timeline-track" role="progressbar" aria-valuenow={0} aria-label="Track progress">
-                <div className="timeline-fill" style={{ width: '0%' }} />
+              <span className="timeline-time">{formatPlaybackTime(elapsedTime)}</span>
+              <div
+                className="timeline-track"
+                role="progressbar"
+                aria-valuenow={Math.round(progress)}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-label="Track progress"
+                tabIndex={0}
+                onClick={seekFromTimeline}
+                onKeyDown={seekWithKeyboard}
+              >
+                <div className="timeline-fill" style={{ width: `${progress}%` }} />
               </div>
               <span className="timeline-time">{currentTrack.duration}</span>
             </div>
@@ -230,7 +262,7 @@ export function Player() {
                 />
               </div>
               <span className="drawer-demo-badge">
-                DEMO PREVIEW UNAVAILABLE
+                {currentTrack.audioSrc ? 'CC BY PREVIEW AVAILABLE' : 'PREVIEW UNAVAILABLE'}
               </span>
             </div>
 

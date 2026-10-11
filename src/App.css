@@ -3567,18 +3567,33 @@
     border-radius: var(--radius-md);
   }
 
-  /*
-   * iOS can intermittently stop compositing backdrop-filter on a fixed element
-   * that is translated for centering. Give the dock a self-sufficient surface
-   * so the compact player and expanded drawer never become transparent.
-   */
+  /* Keep the mobile player fully solid and readable over any page content. */
   .audio-player-dock.glass-player {
-    background-color: rgba(10, 11, 17, 0.96);
-    background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.055), transparent 58%);
+    background: #090a0f;
     border-color: rgba(255, 255, 255, 0.16);
     box-shadow: 0 18px 42px -12px rgba(0, 0, 0, 0.82), var(--glass-inset-highlight);
-    backdrop-filter: blur(var(--glass-blur-heavy)) saturate(180%);
-    -webkit-backdrop-filter: blur(var(--glass-blur-heavy)) saturate(180%);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  /* The drawer mounts on demand, so an animation makes its reveal feel intentional. */
+  .audio-player-dock.is-mobile-expanded .player-drawer-content {
+    transform-origin: bottom center;
+    overflow: hidden;
+    animation: playerDrawerReveal 780ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @keyframes playerDrawerReveal {
+    from {
+      max-height: 0;
+      opacity: 0;
+      transform: translateY(18px);
+    }
+    to {
+      max-height: 640px;
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .player-main-bar {
